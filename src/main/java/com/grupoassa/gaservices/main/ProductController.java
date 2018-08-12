@@ -9,6 +9,8 @@ import com.grupoassa.gaservices.entities.Product;
 import com.grupoassa.gaservices.filters.AscFilter;
 import com.grupoassa.gaservices.json.GeneralResponse;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,10 +54,15 @@ public class ProductController extends GenericController {
 //        return UserEntityManager.select(User.class, id);
         return super.get(Product.class, id);
     }
-    
+
     @RequestMapping(method = GET, value = route + "/list/{column}")
-    public List<Product> getProductsBy(@PathVariable String column){
+    public List<Product> getProductsBy(@PathVariable String column) {
         return super.getProductsByFilter(Product.class, new AscFilter(column));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public GeneralResponse handleError(HttpServletRequest req, Exception ex) {
+        return new GeneralResponse(req.getRequestURL().toString(), req.getMethod(), ERROR_STATUS, ex.getMessage());
     }
 
     @Override
