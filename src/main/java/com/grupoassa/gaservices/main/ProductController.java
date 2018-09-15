@@ -55,9 +55,13 @@ public class ProductController extends GenericController {
         return super.get(Product.class, id);
     }
 
-    @RequestMapping(method = GET, value = route + "/list/{column}")
-    public List<Product> getProductsBy(@PathVariable String column) {
-        return super.getProductsByFilter(Product.class, new AscFilter(column));
+    @RequestMapping(method = GET, value = route + "/list/{columns}")
+    public List<Product> getProductsBy(@PathVariable String[] columns) {
+        AscFilter[] listFilters= new AscFilter[columns.length];
+        for(int i = 0;i < columns.length ; i++){
+           listFilters[i]= new AscFilter(columns[i]); 
+        }
+        return super.getProductsByFilter(Product.class, listFilters);
     }
 
     @ExceptionHandler(Exception.class)
